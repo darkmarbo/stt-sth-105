@@ -1,5 +1,14 @@
-﻿生成启动时间为 2016/10/27 14:09:44。
+﻿生成启动时间为 2016/10/28 10:19:08。
+     1>项目“D:\so_tts_adapt\tts_adap_105\tts_adap_105\tts_adap_105.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Visual Leak Detector\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt src\HTS_audio.c src\HTS_misc.c
+         HTS_misc.c
+         HTS_audio.c
+         正在生成代码...
+       Link:
+         tts_adap_105.vcxproj -> D:\so_tts_adapt\tts_adap_105\Debug\tts_adap_105.exe
+     1>已完成生成项目“D:\so_tts_adapt\tts_adap_105\tts_adap_105\tts_adap_105.vcxproj”(Build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:00.04
+已用时间 00:00:00.59
