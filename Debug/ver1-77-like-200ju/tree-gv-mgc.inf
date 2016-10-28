@@ -1,0 +1,33 @@
+QS PhoneInIpNum_13 { "*-13;*" }
+QS PhoneInIpNum_LessThan_7 { "*-0;*","*-1;*","*-2;*","*-3;*","*-4;*","*-5;*","*-6;*","*-7;*" }
+QS PhoneInIpNum_LessThan_10 { "*-0;*","*-1;*","*-2;*","*-3;*","*-4;*","*-5;*","*-6;*","*-7;*","*-8;*","*-9;*","*-10;*" }
+QS PhoneInIpNum_LessThan_12 { "*-0;*","*-1;*","*-2;*","*-3;*","*-4;*","*-5;*","*-6;*","*-7;*","*-8;*","*-9;*","*-10;*","*-11;*","*-12;*" }
+QS PwInSentNum_8 { "*+8@*" }
+QS PwInSentNum_LessThan_7 { "*+0@*","*+1@*","*+2@*","*+3@*","*+4@*","*+5@*","*+6@*","*+7@*" }
+QS PwInSentNum_LessThan_11 { "*+0@*","*+1@*","*+2@*","*+3@*","*+4@*","*+5@*","*+6@*","*+7@*","*+8@*","*+9@*","*+10@*","*+11@*" }
+QS PwInSentNum_LessThan_12 { "*+0@*","*+1@*","*+2@*","*+3@*","*+4@*","*+5@*","*+6@*","*+7@*","*+8@*","*+9@*","*+10@*","*+11@*","*+12@*" }
+QS PpInSentNum_6 { "*+6/F:*" }
+QS PpInSentNum_7 { "*+7/F:*" }
+QS PpInSentNum_LessThan_4 { "*+0/F:*","*+1/F:*","*+2/F:*","*+3/F:*","*+4/F:*" }
+QS PpInSentNum_LessThan_6 { "*+0/F:*","*+1/F:*","*+2/F:*","*+3/F:*","*+4/F:*","*+5/F:*","*+6/F:*" }
+QS IpInSentNum_1 { "*/G:1" }
+QS IpInSentNum_LessThan_6 { "*/G:0","*/G:1","*/G:2","*/G:3","*/G:4","*/G:5","*/G:6" }
+
+{*}[2]
+{
+   0 PwInSentNum_LessThan_7                             -1         -2    
+  -1 PpInSentNum_LessThan_6                             -4         -3    
+  -2 IpInSentNum_1                                      -6          "gv_mgc_1" 
+  -3 PwInSentNum_LessThan_11                           -10         -7    
+  -4 IpInSentNum_LessThan_6                              "gv_mgc_2"      -5    
+  -5 PpInSentNum_7                                       "gv_mgc_3"     -12    
+  -6 PhoneInIpNum_LessThan_10                           -8        -13    
+  -7 PpInSentNum_LessThan_4                              "gv_mgc_4"     -11    
+  -8 PhoneInIpNum_LessThan_12                           -9          "gv_mgc_5" 
+  -9 PhoneInIpNum_13                                     "gv_mgc_7"       "gv_mgc_6" 
+ -10 PpInSentNum_6                                       "gv_mgc_9"       "gv_mgc_8" 
+ -11 PwInSentNum_8                                      "gv_mgc_11"      "gv_mgc_10" 
+ -12 PwInSentNum_LessThan_12                            "gv_mgc_13"      "gv_mgc_12" 
+ -13 PhoneInIpNum_LessThan_7                            "gv_mgc_15"      "gv_mgc_14" 
+}
+
