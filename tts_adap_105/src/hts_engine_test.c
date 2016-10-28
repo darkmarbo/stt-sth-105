@@ -292,7 +292,7 @@ int main(int argc, char **argv)
    HTS_Engine engine;
 
    /* parse command line */
-   if (argc < 2)
+   if (argc < 3)
    {
 	   Usage();
    }
@@ -362,9 +362,8 @@ int main(int argc, char **argv)
 
    // 输入/输出 文件 
    labfn = argv[1];
-   //rawfn = (char *)calloc(1000, sizeof(char));
-   //_snprintf(rawfn, 1000, "%s.raw", labfn);
-   rawfp = Getfp("test.raw", "wb");
+   char *rawfn = argv[2];  
+   rawfp = Getfp(rawfn, "wb");
    //tracefn = (char *)calloc(1000, sizeof(char));
    //_snprintf(tracefn, "%s.trace", labfn);
    tracefp = Getfp("test.trace", "wt");
