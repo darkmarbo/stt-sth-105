@@ -222,9 +222,11 @@ int GetNumInterp(int argc, char **argv_search)
 
 int main(int argc, char **argv)
 {
-   int i;
+	int num_argc = 10;
+	int i;
    double f;
-   char *labfn = NULL;
+   // 输入lab文件名		输出raw		trace
+   char *labfn = NULL;// rawfn = NULL, tracefn = NULL;
    FILE *durfp = NULL, *mgcfp = NULL, *lf0fp = NULL, *lpffp = NULL;
    FILE *wavfp = NULL, *rawfp = NULL, *tracefp = NULL;
 
@@ -290,15 +292,18 @@ int main(int argc, char **argv)
    HTS_Engine engine;
 
    /* parse command line */
-   if (argc == 1)
-      Usage();
+   if (argc < 2)
+   {
+	   Usage();
+   }
+      
 
    /* delta window handler for mel-cepstrum */
-   fn_ws_mgc = (char **) calloc(argc, sizeof(char *));
+   fn_ws_mgc = (char **) calloc(num_argc, sizeof(char *));
    /* delta window handler for log f0 */
-   fn_ws_lf0 = (char **) calloc(argc, sizeof(char *));
+   fn_ws_lf0 = (char **) calloc(num_argc, sizeof(char *));
    /* delta window handler for low-pass filter */
-   fn_ws_lpf = (char **) calloc(argc, sizeof(char *));
+   fn_ws_lpf = (char **) calloc(num_argc, sizeof(char *));
 
    /* prepare for interpolation */
    num_interp = GetNumInterp(argc, argv);
@@ -321,235 +326,66 @@ int main(int argc, char **argv)
    fn_ts_gvl = (char **) calloc(num_interp, sizeof(char *));
    fn_ts_gvf = (char **) calloc(num_interp, sizeof(char *));
 
-   /* read command */
-   while (--argc) {
-      if (**++argv == '-') {
-         switch (*(*argv + 1)) {
-         case 'v':
-            switch (*(*argv + 2)) {
-            case 'p':
-               phoneme_alignment = TRUE;
-               break;
-            default:
-               Error(1, "hts_engine: Invalid option '-v%c'.\n", *(*argv + 2));
-            }
-            break;
-         case 't':
-            switch (*(*argv + 2)) {
-            case 'd':
-               fn_ts_dur[num_ts_dur++] = *++argv;
-               break;
-            case 'm':
-               fn_ts_mgc[num_ts_mgc++] = *++argv;
-               break;
-            case 'f':
-            case 'p':
-               fn_ts_lf0[num_ts_lf0++] = *++argv;
-               break;
-            case 'l':
-               fn_ts_lpf[num_ts_lpf++] = *++argv;
-               break;
-            default:
-               Error(1, "hts_engine: Invalid option '-t%c'.\n", *(*argv + 2));
-            }
-            --argc;
-            break;
-         case 'm':
-            switch (*(*argv + 2)) {
-            case 'd':
-               fn_ms_dur[num_ms_dur++] = *++argv;
-               break;
-            case 'm':
-               fn_ms_mgc[num_ms_mgc++] = *++argv;
-               break;
-            case 'f':
-            case 'p':
-               fn_ms_lf0[num_ms_lf0++] = *++argv;
-               break;
-            case 'l':
-               fn_ms_lpf[num_ms_lpf++] = *++argv;
-               break;
-            default:
-               Error(1, "hts_engine: Invalid option '-m%c'.\n", *(*argv + 2));
-            }
-            --argc;
-            break;
-         case 'd':
-            switch (*(*argv + 2)) {
-            case 'm':
-               fn_ws_mgc[num_ws_mgc++] = *++argv;
-               break;
-            case 'f':
-            case 'p':
-               fn_ws_lf0[num_ws_lf0++] = *++argv;
-               break;
-            case 'l':
-               fn_ws_lpf[num_ws_lpf++] = *++argv;
-               break;
-            default:
-               Error(1, "hts_engine: Invalid option '-d%c'.\n", *(*argv + 2));
-            }
-            --argc;
-            break;
-         case 'o':
-            switch (*(*argv + 2)) {
-            case 'w':
-               wavfp = Getfp(*++argv, "wb");
-               break;
-            case 'r':
-               rawfp = Getfp(*++argv, "wb");
-               break;
-            case 'd':
-               durfp = Getfp(*++argv, "wt");
-               break;
-            case 'm':
-               mgcfp = Getfp(*++argv, "wb");
-               break;
-            case 'f':
-            case 'p':
-               lf0fp = Getfp(*++argv, "wb");
-               break;
-            case 'l':
-               lpffp = Getfp(*++argv, "wb");
-               break;
-            case 't':
-               tracefp = Getfp(*++argv, "wt");
-               break;
-            default:
-               Error(1, "hts_engine: Invalid option '-o%c'.\n", *(*argv + 2));
-            }
-            --argc;
-            break;
-         case 'h':
-            Usage();
-            break;
-         case 's':
-            sampling_rate = atoi(*++argv);
-            --argc;
-            break;
-         case 'p':
-            fperiod = atoi(*++argv);
-            --argc;
-            break;
-         case 'a':
-            alpha = atof(*++argv);
-            --argc;
-            break;
-         case 'g':
-            stage = atoi(*++argv);
-            --argc;
-            break;
-         case 'l':
-            use_log_gain = TRUE;
-            break;
-         case 'b':
-            beta = atof(*++argv);
-            --argc;
-            break;
-         case 'r':
-            speech_speed = atof(*++argv);
-            --argc;
-            break;
-         case 'f':
-            switch (*(*argv + 2)) {
-            case 'm':
-               f = atof(*++argv);
-               if (f < -24.0)
-                  f = -24.0;
-               if (f > 24.0)
-                  f = 24.0;
-               half_tone = f;
-               break;
-            default:
-               Error(1, "hts_engine: Invalid option '-f%c'.\n", *(*argv + 2));
-            }
-            --argc;
-            break;
-         case 'u':
-            uv_threshold = atof(*++argv);
-            --argc;
-            break;
-         case 'i':
-            ++argv;
-            argc--;
-            for (i = 0; i < num_interp; i++) {
-               rate_interp[i] = atof(*++argv);
-               argc--;
-            }
-            break;
-         case 'e':
-            switch (*(*argv + 2)) {
-            case 'm':
-               fn_ts_gvm[num_ts_gvm++] = *++argv;
-               break;
-            case 'f':
-            case 'p':
-               fn_ts_gvl[num_ts_gvl++] = *++argv;
-               break;
-            case 'l':
-               fn_ts_gvf[num_ts_gvf++] = *++argv;
-               break;
-            default:
-               Error(1, "hts_engine: Invalid option '-e%c'.\n", *(*argv + 2));
-            }
-            --argc;
-            break;
-         case 'c':
-            switch (*(*argv + 2)) {
-            case 'm':
-               fn_ms_gvm[num_ms_gvm++] = *++argv;
-               break;
-            case 'f':
-            case 'p':
-               fn_ms_gvl[num_ms_gvl++] = *++argv;
-               break;
-            case 'l':
-               fn_ms_gvf[num_ms_gvf++] = *++argv;
-               break;
-            default:
-               Error(1, "hts_engine: Invalid option '-c%c'.\n", *(*argv + 2));
-            }
-            --argc;
-            break;
-         case 'j':
-            switch (*(*argv + 2)) {
-            case 'm':
-               gv_weight_mgc = atof(*++argv);
-               break;
-            case 'f':
-            case 'p':
-               gv_weight_lf0 = atof(*++argv);
-               break;
-            case 'l':
-               gv_weight_lpf = atof(*++argv);
-               break;
-            default:
-               Error(1, "hts_engine: Invalid option '-j%c'.\n", *(*argv + 2));
-            }
-            --argc;
-            break;
-         case 'k':
-            fn_gv_switch = *++argv;
-            --argc;
-            break;
-         case 'z':
-            audio_buff_size = atoi(*++argv);
-            --argc;
-            break;
-         default:
-            Error(1, "hts_engine: Invalid option '-%c'.\n", *(*argv + 1));
-         }
-      } else {
-         labfn = *argv;
-      }
-   }
+   // 修改为直接读取值
+   fn_ts_dur[num_ts_dur++] = "ver1\\tree-dur.inf"; // -td
+   fn_ts_lf0[num_ts_lf0++] = "ver1\\tree-lf0.inf"; // -tf
+   fn_ts_mgc[num_ts_mgc++] = "ver1\\tree-mgc.inf"; // -tm
+   fn_ts_lpf[num_ts_lpf++] = "ver1\\tree-lpf.inf"; // -tl
+   fn_ms_dur[num_ms_dur++] = "ver1\\dur.pdf"; // -md
+   fn_ms_lf0[num_ms_lf0++] = "ver1\\lf0.pdf"; // -mf
+   fn_ms_mgc[num_ms_mgc++] = "ver1\\mgc.pdf"; // -mm
+   fn_ms_lpf[num_ms_lpf++] = "ver1\\lpf.pdf"; // -ml
+
+   // -dm
+   fn_ws_mgc[num_ws_mgc++] = "ver1\\mgc.win1"; 
+   fn_ws_mgc[num_ws_mgc++] = "ver1\\mgc.win2";
+   fn_ws_mgc[num_ws_mgc++] = "ver1\\mgc.win3";
+   // -df
+   fn_ws_lf0[num_ws_lf0++] = "ver1\\lf0.win1";
+   fn_ws_lf0[num_ws_lf0++] = "ver1\\lf0.win2";
+   fn_ws_lf0[num_ws_lf0++] = "ver1\\lf0.win3";
+   
+   fn_ws_lpf[num_ws_lpf++] = "ver1\\lpf.win1"; // -dl
+   fn_ms_gvm[num_ms_gvm++] = "ver1\\gv-mgc.pdf"; // -cm
+   fn_ms_gvl[num_ms_gvl++] = "ver1\\gv-lf0.pdf"; // -cf 
+   fn_gv_switch = "ver1\\gv-switch.inf"; // -k
+   fn_ts_gvm[num_ts_gvm++] = "ver1\\tree-gv-mgc.inf"; // -em
+   fn_ts_gvl[num_ts_gvl++] = "ver1\\tree-gv-lf0.inf"; // -ef 
+
+   sampling_rate = 44100; // -s
+   fperiod = 220; // -p
+   alpha = 0.55; // -a
+   stage = 0; // -g
+   use_log_gain = TRUE; // -l
+   beta = 0.4; // -b 
+   beta = 0.0; // -b ?  
+
+   // 输入/输出 文件 
+   labfn = argv[1];
+   //rawfn = (char *)calloc(1000, sizeof(char));
+   //_snprintf(rawfn, 1000, "%s.raw", labfn);
+   rawfp = Getfp("test.raw", "wb");
+   //tracefn = (char *)calloc(1000, sizeof(char));
+   //_snprintf(tracefn, "%s.trace", labfn);
+   tracefp = Getfp("test.trace", "wt");
+   
+
+
+   // model 变量赋值完成 
+
+
    /* number of models,trees check */
+   printf("interp=%d\tts_dur=%d\tts_mgc=%d\tts_lf0=%d\tms_dur=%d\tms_mgc=%d\tms_lf0=%d", 
+	   num_interp,num_ts_dur,num_ts_mgc,num_ts_lf0,num_ms_dur,num_ms_mgc,num_ms_lf0);
+   // mod 
+   /*
    if (num_interp != num_ts_dur || num_interp != num_ts_mgc ||
        num_interp != num_ts_lf0 || num_interp != num_ms_dur ||
        num_interp != num_ms_mgc || num_interp != num_ms_lf0) {
       Error(1, "hts_engine: specify %d models(trees) for each parameter.\n",
             num_interp);
    }
+   */
    if (num_ms_lpf > 0 || num_ts_lpf > 0) {
       if (num_interp != num_ms_lpf || num_interp != num_ts_lpf) {
          Error(1, "hts_engine: specify %d models(trees) for each parameter.\n",
@@ -559,14 +395,13 @@ int main(int argc, char **argv)
 
    /* initialize (stream[0] = spectrum, stream[1] = lf0, stream[2] = low-pass filter) */
    if (num_ms_lpf > 0 || num_ts_lpf > 0) {
-      // imp-1
       HTS_Engine_initialize(&engine, 3);
    } else {
       HTS_Engine_initialize(&engine, 2);
    }
 
    /* load duration model */
-   // imp-2
+   printf("fn_ts_dur=%s\t", fn_ts_dur[0]);
    HTS_Engine_load_duration_from_fn(&engine, fn_ms_dur, fn_ts_dur, num_interp);
    /* load stream[0] (spectrum model) */
    HTS_Engine_load_parameter_from_fn(&engine, fn_ms_mgc, fn_ts_mgc, fn_ws_mgc,
@@ -575,7 +410,6 @@ int main(int argc, char **argv)
    HTS_Engine_load_parameter_from_fn(&engine, fn_ms_lf0, fn_ts_lf0, fn_ws_lf0,
                                      1, TRUE, num_ws_lf0, num_interp);
    /* load stream[2] (low-pass filter model) */
-   // imp-3 新增加的 
    if (num_ms_lpf > 0 || num_ts_lpf > 0)
       HTS_Engine_load_parameter_from_fn(&engine, fn_ms_lpf, fn_ts_lpf,
                                         fn_ws_lpf, 2, FALSE, num_ws_lpf,
@@ -699,6 +533,8 @@ int main(int argc, char **argv)
    free(fn_ts_gvm);
    free(fn_ts_gvl);
    free(fn_ts_gvf);
+   //free(rawfn);
+   //free(tracefn);
 
    /* close files */
    if (durfp != NULL)
